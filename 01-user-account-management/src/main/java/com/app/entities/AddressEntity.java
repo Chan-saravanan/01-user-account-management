@@ -4,6 +4,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
@@ -11,6 +13,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
 
 import com.app.entities.attributes.ids.generators.CustomStringIdGenerator;
 
@@ -18,11 +21,11 @@ import com.app.entities.attributes.ids.generators.CustomStringIdGenerator;
 @Table(name="ADDRESS_1")
 public class AddressEntity extends AbstractEntityObject<String>{
 	@Id
-	@SequenceGenerator(sequenceName="ADDRESS_SEQ", name="addressSequence")
 	@GenericGenerator(
 			name = "addressSequence", 
 			strategy = "com.app.entities.attributes.ids.generators.CustomStringIdGenerator", 
 			parameters = {
+					@Parameter(name = SequenceStyleGenerator.SEQUENCE_PARAM, value ="ADDRESS_SEQ"),
 		            @Parameter(name = CustomStringIdGenerator.SEQUENCE_FORMAT, value ="05d"),
 		            @Parameter(name = CustomStringIdGenerator.SEPARATOR_REQUIRED, value = "true"),
 		            @Parameter(name = CustomStringIdGenerator.SEQUENCE_PREFIX_SEPARATOR_REQUIRED, value = "true"),
@@ -33,6 +36,7 @@ public class AddressEntity extends AbstractEntityObject<String>{
 		            @Parameter(name = CustomStringIdGenerator.SEQUENCE_SUFFIX, value = "TEST")
 		            
 	})
+	@GeneratedValue(generator="addressSequence", strategy=GenerationType.SEQUENCE)
 	@Column(name="ADDR_ID")
 	protected String id;
 	@Column(name="ADDR_LINE1")

@@ -2,11 +2,14 @@ package com.app.controllers;
 
 import java.util.logging.Logger;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +17,7 @@ import com.app.entities.AddressEntity;
 import com.app.entities.RoleEntity;
 import com.app.entities.UserAccessDetailEntity;
 import com.app.entities.UserProfileEntity;
+import com.app.models.AddressModel;
 import com.app.repositories.AccountAccessRepository;
 import com.app.repositories.AddressRepository;
 import com.app.repositories.RoleRepository;
@@ -30,23 +34,17 @@ public class UserProfileController {
 	@Autowired
 	private RoleRepository roleRepo;
 	@Autowired
-	private AddressRepository addreessRepo;
+	private AddressRepository addressRepo;
 	
 	
 	@PostMapping(path= {"/create","/register"})
 	public ResponseEntity<String> createUser(){
-		logger.info("------------->Creating the role, student!");
-		//1. check whether this role exists!
-		//2. If not exists, then create the STUDENT role!
+		//Getting or creating the student role!
 		RoleEntity role = new RoleEntity();
 		role.setRole("STUDENT");
-		//save the role to the database!
 		role = roleRepo.save(role);
-		logger.info("------------->Role student, "+role);
-		
 		
 		//creating the userProfile account!
-		logger.info("------------->Creating the account, UserProfile!");
 		UserProfileEntity userProfile = new UserProfileEntity();
 		userProfile.setUsername("CHANJAY001");
 		userProfile.setFirstName("Chanjay");
@@ -57,9 +55,6 @@ public class UserProfileController {
 		String userId = userProfile.getId();
 		logger.info("Created the user :"+userId);
 		
-		
-		//create the userAccessDetail information!		
-		logger.info("------------->Saving UserAccessDetail info!");
 		UserAccessDetailEntity userAccessDetail = new UserAccessDetailEntity();
 		userAccessDetail.setId(userId);
 		userAccessDetail.setAuthorization_token("authorization_token-aksjcnacjnajcnajcncnjcs");
@@ -67,27 +62,30 @@ public class UserProfileController {
 		userAccessDetail.setAuthCount(0);
 		userAccessDetail.setUserProfile(userProfile);
 		userProfile.setAccessDetail(userAccessDetail);
-		logger.info("setting user access detail info!");
 		userAccessDetail = accountAccessRepo.save(userAccessDetail);
-		logger.info("Saved the user Access detail!");
 		userProfile = userProfileRepo.save(userProfile);
 		
 		userProfile.addRole(role);
 		userProfile = userProfileRepo.save(userProfile);
-		logger.info("Providing the response!");
 		return new ResponseEntity<>(userProfile.getId(), HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/update/address/{userId}")
-	public ResponseEntity<UserProfileEntity> updateAddress(@PathVariable String userId){
+	public ResponseEntity<String> updateAddress(@PathVariable String userId, @RequestBody AddressModel addressModel){
 		//find the userprofile object!
-		AddressEntity address = new AddressEntity();
-		address.setAddressLine1("This is address line1");
-		address.setAddressLine2("This is address line2");
-		address.setCity("Chennai");
-		address.setState("Tamil Nadu");
-		address.setContactPhone("9791114359");
+		logger.info("userId:"+userId);
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		
-		return new ResponseEntity<>(null, HttpStatus.OK);
+		UserProfileEntity userProfile = userProfileRepo.findById(userId).get();
+		
+		AddressEntity entity = modelMapper.map(addressModel, AddressEntity.class);
+		entity.setUserProfile(userProfile);
+		entity = addressRepo.save(entity);
+		
+		userProfile.setAddress(entity);
+		userProfileRepo.save(userProfile);
+		
+		return new ResponseEntity<>("Succes", HttpStatus.OK);
 	}
 }
