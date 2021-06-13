@@ -23,7 +23,7 @@ public abstract class AbstractEntityObject<T extends Serializable> implements Ba
 	
 	@Column(name="ACTIVE_STATUS", columnDefinition="NUMBER(1)", length=1)
 	@Convert(converter=BooleanToStringConverter.class)
-	private Boolean active;
+	private Boolean active = Boolean.TRUE;
 	
 	@PrePersist
 	@PreUpdate

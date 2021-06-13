@@ -64,7 +64,7 @@ public class UserProfileEntity extends AbstractEntityObject<String>{
 	private UserAccessDetailEntity accessDetail;
 	
 	
-	@ManyToMany(cascade= {CascadeType.REMOVE,CascadeType.DETACH,CascadeType.REFRESH },fetch=FetchType.LAZY)
+	@ManyToMany(cascade= {CascadeType.REMOVE,CascadeType.DETACH,CascadeType.REFRESH },fetch=FetchType.EAGER)
 	@JoinTable(
 			name="USER_ROLE_MAPPING",
 			joinColumns=@JoinColumn(name="USER_ID"),

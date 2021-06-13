@@ -12,4 +12,5 @@ public interface AuthenticationService extends UserDetailsService, ServiceUtilti
 	LoginResponseModel login(LoginRequestModel loginRequest) throws Exception;
 	String register(UserProfile model);
 	boolean checkUserNameforExistence(String username);
+	
 }

@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.app.configurations.security.UserToUserDetails;
 import com.app.entities.RoleEntity;
 import com.app.entities.UserAccessDetailEntity;
 import com.app.entities.UserProfileEntity;
@@ -43,6 +44,9 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
+	@Autowired
+	private UserToUserDetails userToUserDetailConverter;
+	
 	@Override
 	public UserProfileEntity findByUsername(String username){
 		UserProfileEntity entity = userProfileRepo.findByUsername(username);
@@ -55,8 +59,12 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 		
 		if(Objects.isNull(userProfile)) throw new UsernameNotFoundException(username);
 		
-		return new User(userProfile.getUsername(), userProfile.getEncryptedPassword(), true, true, true, true, new ArrayList<>());
+		UserDetails userDetail = userToUserDetailConverter.convert(userProfile);
+		
+		return userDetail;
+		
 	}
+	
 	@Override
 	public LoginResponseModel login(LoginRequestModel loginRequest) {
 		// TODO Auto-generated method stub
