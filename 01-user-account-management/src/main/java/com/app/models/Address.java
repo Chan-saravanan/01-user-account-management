@@ -1,6 +1,6 @@
 package com.app.models;
 
-public class AddressModel {
+public class Address {
 	private String id;
 	private String addressLine1;
 	private String addressLine2;

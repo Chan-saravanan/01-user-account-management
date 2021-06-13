@@ -51,6 +51,15 @@ public class RoleEntity extends AbstractEntityObject<String>{
 	)
 	private List<UserProfileEntity> users = new ArrayList<>();
 	
+	public RoleEntity() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public RoleEntity(String role) {
+		this.role = role;
+	}
+	
+	
 	public void addAccount(UserProfileEntity account) {
 		if(!users.contains(account))
 		{

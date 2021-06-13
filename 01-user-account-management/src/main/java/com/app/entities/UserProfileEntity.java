@@ -15,11 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PostPersist;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.FetchProfile.FetchOverride;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -82,10 +79,20 @@ public class UserProfileEntity extends AbstractEntityObject<String>{
 	
 	public void addRole(RoleEntity role)
 	{
+		if(Objects.isNull(roles))
+			roles = new ArrayList<>();
+		
 		if(!roles.contains(role))
 		{
 			roles.add(role);
 		}
+	}
+	
+	public void addRoles(List<RoleEntity> roles)
+	{
+		roles.stream().forEach(role->{
+			this.addRole(role);
+		});
 	}
 	
 	public void removeRole(RoleEntity role) {
@@ -163,7 +170,8 @@ public class UserProfileEntity extends AbstractEntityObject<String>{
 	@Override
 	public String toString() {
 		return "UserProfileEntity [id=" + id + ", username=" + username + ", firstName=" + firstName + ", lastName="
-				+ lastName + ", encryptedPassword=" + encryptedPassword + ", address=" + address + ", accessDetail->="
-				+ accessDetail + ", roles=" + roles + "]";
+				+ lastName + ", encryptedPassword=" + encryptedPassword + ", address=" + address //+ ", accessDetail->="
+				//+ accessDetail + ", roles=" + roles 
+				+ "]";
 	}
 }

@@ -26,9 +26,11 @@ public class UserAccessDetailEntity extends AbstractEntityObject<String>{
 	@Column(name="ACCESS_ACCOUNT_ID")
 	protected String id;
 	@Column(name="AUTH_TOKEN")
-	private String authorization_token;
+	private String authorizationToken;
+	@Column(name="ACCESS_TOKEN")
+	private String accessToken;
 	@Column(name="REFRESH_TOKEN")
-	private String refresh_token;
+	private String refreshToken;
 	@Column(name="AUTH_TOKEN_CREATED_TIME")
 	private Date authTokenCreatedTime;
 	@Column(name="AUTH_TOKEN_LAST_ACCESSED_TIME")
@@ -44,18 +46,7 @@ public class UserAccessDetailEntity extends AbstractEntityObject<String>{
 
 	public UserAccessDetailEntity() {
 	}
-	
-	public UserAccessDetailEntity(String authorization_token, String refresh_token, Integer authCount, String id) {
-		super();
-		//using the same user's id!
-		System.out.println("Getting id from the user profile!");
-		this.id =id;
-		System.out.println("user profile id:"+this.id);
-		
-		this.authorization_token = authorization_token;
-		this.refresh_token = refresh_token;
-		this.authCount = authCount;
-	}
+
 	@PrePersist
 	private void createAction()
 	{
@@ -66,18 +57,6 @@ public class UserAccessDetailEntity extends AbstractEntityObject<String>{
 	private void updateLastAccessedTime() {
 		System.out.println("updateLastAccessedTime called!");
 		authLastAccessTime = new Date();
-	}
-	public String getAuthorization_token() {
-		return authorization_token;
-	}
-	public void setAuthorization_token(String authorization_token) {
-		this.authorization_token = authorization_token;
-	}
-	public String getRefresh_token() {
-		return refresh_token;
-	}
-	public void setRefresh_token(String refresh_token) {
-		this.refresh_token = refresh_token;
 	}
 	public Date getAuthTokenCreatedTime() {
 		return authTokenCreatedTime;
@@ -127,10 +106,35 @@ public class UserAccessDetailEntity extends AbstractEntityObject<String>{
 		return id.hashCode();
 	}
 
+	public String getAuthorizationToken() {
+		return authorizationToken;
+	}
+
+	public void setAuthorizationToken(String authorizationToken) {
+		this.authorizationToken = authorizationToken;
+	}
+
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
 	@Override
 	public String toString() {
-		return "UserAccessDetailEntity [id=" + id + ", authorization_token=" + authorization_token + ", refresh_token="
-				+ refresh_token + ", authTokenCreatedTime=" + authTokenCreatedTime + ", authLastAccessTime="
-				+ authLastAccessTime + ", authCount=" + authCount + ", loggedIn=" + loggedIn + "]";
+		return "UserAccessDetailEntity [id=" + id + ", authorizationToken=" + authorizationToken + ", accessToken="
+				+ accessToken + ", refreshToken=" + refreshToken + ", authTokenCreatedTime=" + authTokenCreatedTime
+				+ ", authLastAccessTime=" + authLastAccessTime + ", authCount=" + authCount + ", loggedIn=" + loggedIn
+				+ "]";
 	}
 }
